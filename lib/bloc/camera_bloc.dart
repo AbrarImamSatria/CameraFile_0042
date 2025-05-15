@@ -136,4 +136,12 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
       snackbarMessage: 'Gambar dihapus',
     ));
   }
+
+  Future<void> _onClearSnackbar(
+    ClearSnackbar event, Emitter<CameraState> emit) async {
+    if (state is! CameraReady) return;
+    emit((state as CameraReady).copyWith(
+      snackbarMessage: null,
+      clearSnackbar: true));
+  }
 }
