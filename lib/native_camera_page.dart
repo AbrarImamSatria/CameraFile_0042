@@ -111,13 +111,13 @@ class _CameraPageState extends State<CameraPage> {
   Widget _circleButton(IconData icon, VoidCallback onTap, {double size = 50}) {
     return ClipOval(
       child: Material(
-        color: Colors.white24,
+        color: Colors.black.withAlpha(102),
         child: InkWell(
           onTap: onTap,
           child: SizedBox(
             width: size,
             height: size,
-            child: Icon(icon, color: Colors.white),
+            child: Icon(icon, color: const Color.fromARGB(255, 210, 210, 210)),
           ),
         ),
       ),
@@ -182,34 +182,38 @@ class _CameraPageState extends State<CameraPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body:
           _controller?.value.isInitialized ?? false
-              ? SafeArea(
-                child: Column(
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTapDown: (details) {
-                          final RenderBox box =
-                              context.findRenderObject() as RenderBox;
-                          final offset = box.globalToLocal(
-                            details.globalPosition,
-                          );
-                          final size = box.size;
-                          final relativeOffset = Offset(
-                            offset.dx / size.width,
-                            offset.dy / size.height,
-                          );
-                          _controller?.setFocusPoint(relativeOffset);
-                          _controller?.setExposurePoint(relativeOffset);
-                        },
-                        child: CameraPreview(_controller!),
-                      ),
+              ? Stack(
+                children: [
+                  Positioned.fill(child: CameraPreview(_controller!)),
+
+                  _buildZoomControls(),
+
+                  Positioned.fill(
+                    child: GestureDetector(
+                      onTapDown: (details) {
+                        final box = context.findRenderObject() as RenderBox;
+                        final offset = box.globalToLocal(
+                          details.globalPosition,
+                        );
+                        final size = box.size;
+                        final relativeOffset = Offset(
+                          offset.dx / size.width,
+                          offset.dy / size.height,
+                        );
+                        _controller?.setFocusPoint(relativeOffset);
+                        _controller?.setExposurePoint(relativeOffset);
+                      },
                     ),
-                    const SizedBox(height: 10),
-                    _buildZoomControls(),
-                    const SizedBox(height: 10),
-                    Row(
+                  ),
+
+                  Positioned(
+                    bottom: 20,
+                    left: 0,
+                    right: 0,
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         _circleButton(_flashIcon(), _toggleFlash),
@@ -217,9 +221,8 @@ class _CameraPageState extends State<CameraPage> {
                         _circleButton(Icons.flip_camera_android, _switchCamera),
                       ],
                     ),
-                    const SizedBox(height: 20),
-                  ],
-                ),
+                  ),
+                ],
               )
               : const Center(child: CircularProgressIndicator()),
     );
