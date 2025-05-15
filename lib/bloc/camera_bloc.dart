@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:camera/camera.dart';
-import 'package:cameraandfilesensor/native_camera_page.dart';
+import 'package:cameraandfilesensor/camera_page.dart';
 import 'package:cameraandfilesensor/storage_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
